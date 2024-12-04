@@ -26,9 +26,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-200 to-cyan-200`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-blue-200 to-cyan-200 p-10`}
       >
-        <h1 className="text-3xl text-sky-500 text-center py-4">Forms Demo</h1>
+        <h1 className="text-3xl text-sky-500 text-center">Forms Demo</h1>
         {children}
       </body>
     </html>

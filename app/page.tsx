@@ -1,8 +1,7 @@
-import Image from "next/image";
+import DemoForm from "@/components/DemoForm";
 
 export default function Home() {
   return (
-    <>
-    </>
+      <DemoForm />
   );
 }
