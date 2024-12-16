@@ -4,13 +4,16 @@ import { formHandler, FormState } from '@/actions'
 import React, { useActionState } from 'react'
 
 const DemoForm = () => {
-    const initialState: FormState = { message: null, formData: null, errors: {} };
+    const initialState: FormState = { success: false };
     const [state, formAction] = useActionState(formHandler, initialState);
 
     return (
         <div>
             <div className='text-center'>
-                <h2 className={`${'rounded-md text-white mb-1 text-2xl'} ${Object.keys(state.errors || {}).length > 0 ? 'bg-red-500' : 'bg-green-500'}`}>{state.message}</h2>
+                <h2 className={`${'rounded-md text-white mb-1 text-2xl'} ${!state.success ? 'bg-red-500' : 'bg-green-500'}`}>
+                    {state.message}
+                </h2>
+
                 {Object.entries(state.errors || {}).map(([key, value]) => (
                     <p key={key} className='bg-red-500 rounded-md text-white mb-1'>{value}</p>
                 ))}
@@ -19,12 +22,16 @@ const DemoForm = () => {
                 <div>
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="text">Text:</label>
-                        <input className='w-48' type="text" id="text" name="text" defaultValue={state.formData?.get('text')?.toString()} />
+                        <input className='w-48' type="text" id="text" name="text"
+                            defaultValue={state.values?.text}
+                        />
                     </div>
 
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="textarea">Textarea:</label>
-                        <textarea className='w-48' id="textarea" name="textarea" defaultValue={state.formData?.get('textarea')?.toString()} />
+                        <textarea className='w-48' id="textarea" name="textarea"
+                            defaultValue={state.values?.textarea}
+                        />
                     </div>
 
                     <div className='flex my-5'>
@@ -49,24 +56,29 @@ const DemoForm = () => {
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="checkbox">checkbox:</label>
                         <input type="checkbox" id="checkbox" name="checkbox"
-                            defaultChecked={state.formData?.get('checkbox')?.toString() === 'on'}>
+                            defaultChecked={state.values?.checkbox}
+                        >
                         </input>
                     </div>
 
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="radio1">Option 1:</label>
                         <input type="radio" id="radio1" name="radio" value="radio-1"
-                            defaultChecked={state.formData?.get('radio') === 'radio-1'}>
+                            defaultChecked={state.values?.radio === 'radio-1'}
+                        >
                         </input>
                     </div>
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="radio2">Option 2:</label>
                         <input type="radio" id="radio2" name="radio" value="radio-2"
-                            defaultChecked={state.formData?.get('radio') === 'radio-2'}>
+                            defaultChecked={state.values?.radio === 'radio-2'}
+                        >
                         </input>
                     </div>
 
-                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>Submit</button>
+                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>
+                        Submit
+                    </button>
 
                 </div>
             </form>

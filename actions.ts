@@ -1,51 +1,74 @@
 'use server';
 
+type FormValues = {
+  text?: string;
+  textarea?: string;
+  select?: string;
+  multiSelect?: string[];
+  checkbox?: boolean;
+  radio?: string;
+}
+
 type FormErrors = {
   text?: string;
   textarea?: string;
   select?: string;
   multiSelect?: string;
-  checkbox?: string;
   radio?: string;
 }
 
 export type FormState = {
-  message: string | null;
+  success: boolean;
+  values?: FormValues;
   errors?: FormErrors;
-  formData?: FormData | null;
-};
-
-export async function formHandler(prevState: FormState, formData: FormData) {
-  console.log('Form data:', formData);
-
-  const errors = validateForm(formData);
-  if (Object.keys(errors).length > 0) {
-    return { message: 'Form submition failed!', errors, formData };
-  }
-
-  return { message: 'Form submitted successfully' };
+  message?: string;
 }
 
-function validateForm(formData: FormData): FormErrors {
+export async function formHandler(prevState: FormState, formData: FormData): Promise<FormState> {
+
+  const values: FormValues = {
+    text: formData.get('text')?.toString(),
+    textarea: formData.get('textarea')?.toString(),
+    select: formData.get('select')?.toString(),
+    multiSelect: formData.getAll('multi-select').map(value => value.toString()),
+    checkbox: !!formData.get('checkbox'),
+    radio: formData.get('radio')?.toString()
+  };
+
+  const errors = validateForm(values);
+
+  if (Object.keys(errors).length > 0) {
+    return {
+      success: false,
+      message: 'Form submission failed',
+      values,
+      errors
+    };
+  }
+
+  return { success: true, message: 'Form submitted successfully' };
+}
+
+function validateForm(values: FormValues): FormErrors {
   const errors: FormErrors = {};
 
-  if (!formData.get('text')) {
+  if (!values.text) {
     errors.text = 'Text is required';
   }
 
-  if (!formData.get('textarea')) {
+  if (!values.textarea) {
     errors.textarea = 'Textarea is required';
   }
 
-  if (!formData.get('select')) {
+  if (!values.select) {
     errors.select = 'Select is required';
   }
 
-  if (!formData.get('multi-select')) {
-    errors.multiSelect = 'Multi Select is required';
+  if (values.multiSelect?.length === 0) {
+    errors.multiSelect = 'Multi-select is required';
   }
 
-  if (!formData.get('radio')) {
+  if (!values.radio) {
     errors.radio = 'Radio is required';
   }
 
