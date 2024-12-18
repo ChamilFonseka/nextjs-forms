@@ -1,11 +1,40 @@
 'use client'
 
 import { formHandler, FormState } from '@/actions'
-import React, { useActionState } from 'react'
+import React, { useActionState, useEffect, useState } from 'react'
 
 const DemoForm = () => {
     const initialState: FormState = { success: false };
+
     const [state, formAction] = useActionState(formHandler, initialState);
+
+    const [selectValues, setSelectValues] = useState({
+        select: '',
+        multiSelect: [] as string[],
+    });
+
+    useEffect(() => {
+        if (state.values) {
+            setSelectValues(prev => ({
+                select: state.values?.select || prev.select,
+                multiSelect: state.values?.multiSelect || prev.multiSelect
+            }));
+        }
+    }, [state.values]);
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectValues(prev => ({
+            ...prev,
+            [e.target.name]: e.target.value
+        }));
+    }
+
+    const handleMultiSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectValues(prev => ({
+            ...prev,
+            [e.target.name]: Array.from(e.target.selectedOptions).map(option => option.value)
+        }));
+    }
 
     return (
         <div>
@@ -36,7 +65,10 @@ const DemoForm = () => {
 
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="select">Select:</label>
-                        <select className='w-48' name="select" id="select">
+                        <select className='w-48' name="select" id="select"
+                            value={selectValues.select}
+                            onChange={handleSelectChange}
+                        >
                             <option value=""></option>
                             <option value="sel-1">Select Option 1</option>
                             <option value="sel-2">Select Option 2</option>
@@ -46,7 +78,10 @@ const DemoForm = () => {
 
                     <div className='flex my-5'>
                         <label className='w-32' htmlFor="multi-select">Multi Select:</label>
-                        <select className='w-48' name="multi-select" id="multi-select" multiple>
+                        <select className='w-48' name="multiSelect" id="multi-select" multiple
+                            value={selectValues.multiSelect}
+                            onChange={handleMultiSelectChange}
+                        >
                             <option value="mul-sel-1">Multi select Option 1</option>
                             <option value="mul-sel-2">Multi select Option 2</option>
                             <option value="mul-sel-3">Multi select Option 3</option>

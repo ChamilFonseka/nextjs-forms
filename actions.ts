@@ -1,5 +1,7 @@
 'use server';
 
+import { revalidatePath } from "next/cache";
+
 type FormValues = {
   text?: string;
   textarea?: string;
@@ -30,7 +32,7 @@ export async function formHandler(prevState: FormState, formData: FormData): Pro
     text: formData.get('text')?.toString(),
     textarea: formData.get('textarea')?.toString(),
     select: formData.get('select')?.toString(),
-    multiSelect: formData.getAll('multi-select').map(value => value.toString()),
+    multiSelect: formData.getAll('multiSelect').map(value => value.toString()),
     checkbox: !!formData.get('checkbox'),
     radio: formData.get('radio')?.toString()
   };
@@ -46,6 +48,8 @@ export async function formHandler(prevState: FormState, formData: FormData): Pro
     };
   }
 
+  processData(values);
+  
   return { success: true, message: 'Form submitted successfully' };
 }
 
@@ -73,4 +77,9 @@ function validateForm(values: FormValues): FormErrors {
   }
 
   return errors;
+}
+
+async function processData(values: FormValues) {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log('Processing form data : ', values);
 }
