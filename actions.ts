@@ -1,7 +1,5 @@
 'use server';
 
-import { revalidatePath } from "next/cache";
-
 type FormValues = {
   text?: string;
   textarea?: string;
@@ -48,7 +46,7 @@ export async function formHandler(prevState: FormState, formData: FormData): Pro
     };
   }
 
-  processData(values);
+  await processData(values);
   
   return { success: true, message: 'Form submitted successfully' };
 }
@@ -80,6 +78,6 @@ function validateForm(values: FormValues): FormErrors {
 }
 
 async function processData(values: FormValues) {
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  await new Promise(resolve => setTimeout(resolve, 2000));
   console.log('Processing form data : ', values);
 }

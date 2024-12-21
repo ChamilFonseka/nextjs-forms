@@ -6,7 +6,7 @@ import React, { useActionState, useEffect, useState } from 'react'
 const DemoForm = () => {
     const initialState: FormState = { success: false };
 
-    const [state, formAction] = useActionState(formHandler, initialState);
+    const [state, formAction, isPending] = useActionState(formHandler, initialState);
 
     const [selectValues, setSelectValues] = useState({
         select: '',
@@ -39,6 +39,10 @@ const DemoForm = () => {
     return (
         <div>
             <div className='text-center'>
+                {isPending && <h2 className='rounded-md text-white mb-1 text-2xl bg-purple-500'>
+                    Loading...
+                </h2>}
+
                 <h2 className={`${'rounded-md text-white mb-1 text-2xl'} ${!state.success ? 'bg-red-500' : 'bg-green-500'}`}>
                     {state.message}
                 </h2>
@@ -69,7 +73,7 @@ const DemoForm = () => {
                             value={selectValues.select}
                             onChange={handleSelectChange}
                         >
-                            <option value=""></option>
+                            <option value="-"></option>
                             <option value="sel-1">Select Option 1</option>
                             <option value="sel-2">Select Option 2</option>
                             <option value="sel-3">Select Option 3</option>
@@ -111,7 +115,9 @@ const DemoForm = () => {
                         </input>
                     </div>
 
-                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'>
+                    <button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded' type='submit'
+                        disabled={isPending}
+                    >
                         Submit
                     </button>
 
